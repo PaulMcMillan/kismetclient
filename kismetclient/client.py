@@ -8,8 +8,6 @@ from kismetclient.utils import get_csv_args
 from kismetclient.utils import get_pos_args
 
 log = logging.getLogger(__name__)
-log.addHandler(logging.StreamHandler())
-log.setLevel(logging.DEBUG)
 
 
 class Command(object):
@@ -30,9 +28,9 @@ class Command(object):
         self.opts = map(wrap, opts)
 
     def __str__(self):
-        return '!%d %s %s\n' % (self.command_id,
-                                self.command,
-                                ' '.join(self.opts))
+        return '!%d %s %s' % (self.command_id,
+                              self.command,
+                              ' '.join(self.opts))
 
 
 class Response(object):
@@ -55,7 +53,7 @@ class Response(object):
 class Client(object):
     def __init__(self, address=('localhost', 2501)):
         self.handlers = {}
-        self.capabilities = {}
+        self.protocols = {}
         self.in_progress = {}
         self.register_handler('KISMET',
                               handlers.kismet,
@@ -72,13 +70,15 @@ class Client(object):
         self.register_handler('ERROR',
                               handlers.error,
                               send_enable=False)
+        # Open a socket to the kismet server with line-based buffering
         self.file = socket.create_connection(address).makefile('w', 1)
-        # Do this better.
+
+        # Bootstrap protocols
         self.listen()  # Kismet startup line
-        self.listen()  # Protocols line triggers capabilities reqs
+        self.listen()  # Protocols line triggers capabilities requests
         while len(self.in_progress) > 0:
             self.listen()
-        # Capabilities done populating
+        # Protocols done populating
 
     def register_handler(self, protocol, handler, send_enable=True):
         """ Register a protocol handler, and (optionally) send enable
@@ -95,11 +95,12 @@ class Client(object):
         cmd = Command(command, *opts)
         log.debug(cmd)
         self.in_progress[str(cmd.command_id)] = cmd
-        self.file.write(cmd)
+        self.file.write(str(cmd) + '\n')
 
     def listen(self):
         line = self.file.readline().rstrip('\n')
         r = Response(line)
+        log.debug(r)
         handler = self.handlers.get(r.protocol)
         if handler:
             fields = r.fields
@@ -108,7 +109,7 @@ class Client(object):
                 return handler(self, *fields)
             else:
                 # all parameters in default order
-                field_names = self.capabilities.get(r.protocol, [])
+                field_names = self.protocols.get(r.protocol, [])
                 # If the protocol fields aren't known at all, we don't
                 # handle the message.
                 if field_names:

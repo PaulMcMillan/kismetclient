@@ -1,19 +1,24 @@
+import logging
+
 from kismetclient.utils import csv
 from kismetclient.exceptions import ServerError
+
+log = logging.getLogger(__name__)
 
 
 def kismet(client, version, starttime, servername, dumpfiles, uid):
     """ Handle server startup string. """
-    print version, servername, uid
+    log.info('Server: ' + 
+             ' '.join([version, starttime, servername, dumpfiles, uid]))
 
 
 def capability(client, CAPABILITY, capabilities):
-    """ Register a server capability. """
-    client.capabilities[CAPABILITY] = csv(capabilities)
+    """ Register a server's default protocol capabilities. """
+    client.protocols[CAPABILITY] = csv(capabilities)
 
 
 def protocols(client, protocols):
-    """ Enumerate capabilities so they can be registered. """
+    """ Enumerate protocol capabilities so they can be registered. """
     for protocol in csv(protocols):
         client.cmd('CAPABILITY', protocol)
 
