@@ -3,9 +3,6 @@ import re
 import subprocess
 import logging
 
-from pprint import pprint
-from time import sleep
-
 from kismetclient import handlers
 from kismetclient.protocol import KismetCommand
 from kismetclient.protocol import KismetResponse

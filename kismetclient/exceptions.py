@@ -7,5 +7,5 @@ class ServerError(Exception):
 
     def __str__(self):
         return 'ID: %d CMD: "%s" ERROR: "%s"' % (self.cmd.command_id,
-                                             self.cmd.command,
-                                             self.text)
+                                                 self.cmd.command,
+                                                 self.text)
