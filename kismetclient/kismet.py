@@ -1,20 +1,21 @@
 import socket
 import re
 import subprocess
-import handlers
-from handlers import _pos_args
-from inspect import getargspec
-from pprint import pprint
-from time import sleep
-from protocol import KismetResponse
-from protocol import KismetCommand
 import logging
 
-from utils import csv
+from pprint import pprint
+from time import sleep
+
+from kismetclient import handlers
+from kismetclient.protocol import KismetCommand
+from kismetclient.protocol import KismetResponse
+from kismetclient.utils import get_csv_args
+from kismetclient.utils import get_pos_args
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.StreamHandler())
 log.setLevel(logging.DEBUG)
+
 
 class KismetClient(object):
     def __init__(self, address=('localhost', 2501)):
@@ -50,7 +51,7 @@ class KismetClient(object):
         """
         self.handlers[protocol] = handler
         if send_enable:
-            fields = csv(_pos_args(handler))
+            fields = get_csv_args(handler)
             if not fields:
                 fields = '*'
             self.cmd('ENABLE', protocol, fields)
@@ -67,7 +68,7 @@ class KismetClient(object):
         handler = self.handlers.get(r.protocol)
         if handler:
             fields = r.fields
-            if _pos_args(handler):
+            if get_pos_args(handler):
                 # just the named parameters in handler
                 return handler(self, *fields)
             else:
@@ -76,18 +77,5 @@ class KismetClient(object):
                 # If the protocol fields aren't known at all, we don't
                 # handle the message.
                 if field_names:
-                    named_fields = {k:v for k,v in zip(field_names, fields)}
+                    named_fields = {k: v for k, v in zip(field_names, fields)}
                     return handler(self, **named_fields)
-
-
-#address = ('10.4.0.71', 2501)
-address = ('127.0.0.1', 2501)
-k = KismetClient(address)
-k.register_handler('TRACKINFO', handlers.print_fields)
-
-try:
-    while True:
-        k.read()
-except KeyboardInterrupt:
-#    print k.capabilities
-    print '\nExiting...'

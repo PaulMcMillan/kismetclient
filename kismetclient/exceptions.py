@@ -1,5 +1,6 @@
 class ServerError(Exception):
     """ Exception raised for errors captured from the Kismet Server. """
+
     def __init__(self, cmd, text):
         self.cmd = cmd
         self.text = text
