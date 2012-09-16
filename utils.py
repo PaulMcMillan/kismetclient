@@ -4,5 +4,4 @@ def csv(val):
     elif hasattr(val, '__iter__'):
         return ','.join(map(str, val))
     else:
-        raise Exception('wut?')
-
+        raise TypeError('Must supply a comma separated string or an iterable')

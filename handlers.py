@@ -1,5 +1,6 @@
 from inspect import getargspec
 from utils import csv
+from exception import ServerError
 
 def _pos_args(handler):
     """ Return the names of a handler's positional args """
@@ -16,12 +17,13 @@ def protocols(server, protocols):
         server.cmd('CAPABILITY', protocol)
 
 def ack(server, cmdid, text):
+    """ Handle ack messages for commands. """
     server.in_progress.pop(cmdid)
 
 def error(server, cmdid, text):
+    """ Handle error messages for commands. """
     cmd = server.in_progress.pop(cmdid)
-    # FIXME make a real exception
-    raise Exception(str(cmd), text)
+    raise ServerError(cmd, text)
 
 def print_fields(server, **fields):
     """ A generic handler which prints all the fields. """
