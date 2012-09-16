@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 def kismet(client, version, starttime, servername, dumpfiles, uid):
     """ Handle server startup string. """
-    log.info('Server: ' + 
+    log.info('Server: ' +
              ' '.join([version, starttime, servername, dumpfiles, uid]))
 
 

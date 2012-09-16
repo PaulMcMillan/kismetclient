@@ -17,6 +17,7 @@ address = ('127.0.0.1', 2501)
 k = KismetClient(address)
 k.register_handler('TRACKINFO', handlers.print_fields)
 
+
 def handle_ssid(client, ssid, mac):
     print 'ssid spotted: "%s" with mac %s' % (ssid, mac)
 

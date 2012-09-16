@@ -1,6 +1,5 @@
 import socket
 import re
-import subprocess
 import logging
 
 from kismetclient import handlers
