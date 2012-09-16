@@ -1,4 +1,5 @@
-from kismetclient.kismet import KismetClient
+#!/usr/bin/env python
+from kismetclient.client import Client as KismetClient
 from kismetclient import handlers
 
 from pprint import pprint

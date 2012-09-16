@@ -4,8 +4,7 @@ import subprocess
 import logging
 
 from kismetclient import handlers
-from kismetclient.protocol import KismetCommand
-from kismetclient.protocol import KismetResponse
+from kismetclient import protocol
 from kismetclient.utils import get_csv_args
 from kismetclient.utils import get_pos_args
 
@@ -14,7 +13,7 @@ log.addHandler(logging.StreamHandler())
 log.setLevel(logging.DEBUG)
 
 
-class KismetClient(object):
+class Client(object):
     def __init__(self, address=('localhost', 2501)):
         self.handlers = {}
         self.capabilities = {}
@@ -54,14 +53,14 @@ class KismetClient(object):
             self.cmd('ENABLE', protocol, fields)
 
     def cmd(self, command, *opts):
-        cmd = KismetCommand(command, *opts)
+        cmd = protocol.Command(command, *opts)
         log.debug(cmd)
         self.in_progress[str(cmd.command_id)] = cmd
         self.file.write(cmd)
 
     def read(self):
         line = self.file.readline().rstrip('\n')
-        r = KismetResponse(line)
+        r = protocol.Response(line)
         handler = self.handlers.get(r.protocol)
         if handler:
             fields = r.fields
