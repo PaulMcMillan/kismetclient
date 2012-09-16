@@ -2,35 +2,35 @@ from kismetclient.utils import csv
 from kismetclient.exceptions import ServerError
 
 
-def kismet(server, version, starttime, servername, dumpfiles, uid):
+def kismet(client, version, starttime, servername, dumpfiles, uid):
     """ Handle server startup string. """
     print version, servername, uid
 
 
-def capability(server, CAPABILITY, capabilities):
-    """ Register a server's capability. """
-    server.capabilities[CAPABILITY] = csv(capabilities)
+def capability(client, CAPABILITY, capabilities):
+    """ Register a server capability. """
+    client.capabilities[CAPABILITY] = csv(capabilities)
 
 
-def protocols(server, protocols):
+def protocols(client, protocols):
     """ Enumerate capabilities so they can be registered. """
     for protocol in csv(protocols):
-        server.cmd('CAPABILITY', protocol)
+        client.cmd('CAPABILITY', protocol)
 
 
-def ack(server, cmdid, text):
+def ack(client, cmdid, text):
     """ Handle ack messages in response to commands. """
     # Simply remove from the in_progress queue
-    server.in_progress.pop(cmdid)
+    client.in_progress.pop(cmdid)
 
 
-def error(server, cmdid, text):
+def error(client, cmdid, text):
     """ Handle error messages in response to commands. """
-    cmd = server.in_progress.pop(cmdid)
+    cmd = client.in_progress.pop(cmdid)
     raise ServerError(cmd, text)
 
 
-def print_fields(server, **fields):
+def print_fields(client, **fields):
     """ A generic handler which prints all the fields. """
     for k, v in fields.items():
         print '%s: %s' % (k, v)
