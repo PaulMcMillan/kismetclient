@@ -10,7 +10,7 @@ k.register_handler('TRACKINFO', handlers.print_fields)
 
 try:
     while True:
-        k.read()
+        k.listen()
 except KeyboardInterrupt:
     pprint(k.capabilities)
     print('\nExiting...')

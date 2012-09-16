@@ -74,10 +74,10 @@ class Client(object):
                               send_enable=False)
         self.file = socket.create_connection(address).makefile('w', 1)
         # Do this better.
-        self.read()  # Kismet startup line
-        self.read()  # Protocols line triggers capabilities reqs
+        self.listen()  # Kismet startup line
+        self.listen()  # Protocols line triggers capabilities reqs
         while len(self.in_progress) > 0:
-            self.read()
+            self.listen()
         # Capabilities done populating
 
     def register_handler(self, protocol, handler, send_enable=True):
@@ -97,7 +97,7 @@ class Client(object):
         self.in_progress[str(cmd.command_id)] = cmd
         self.file.write(cmd)
 
-    def read(self):
+    def listen(self):
         line = self.file.readline().rstrip('\n')
         r = Response(line)
         handler = self.handlers.get(r.protocol)
