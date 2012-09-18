@@ -56,7 +56,7 @@ the second is the function to handle it. It is valid to register a
 handler for a protocol which is already handled - in this case the new
 handler overrides the old one.
 
-Commands can be send using `client.cmd(cmd, *args)`:
+Commands can be sent using `client.cmd(cmd, *args)`:
 
 ```python
 k.cmd('ENABLE', protocol, fields)
