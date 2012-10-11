@@ -94,3 +94,7 @@ included: `CAPABILITY`, `ENABLE`, `REMOVE`, `SHUTDOWN`,
 `HOPSOURCE`, and `CHANSOURCE`. For usage, consult the source or monitor an
 interactive session between the official client and server using
 wireshark.
+
+This software is developed using Python 2.7 and the master branch of
+Kismet. It may also work on Python 2.6 and earlier versions of Kismet,
+but ymmv. Please open tickets for bugs using github.
