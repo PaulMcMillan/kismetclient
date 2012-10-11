@@ -112,5 +112,5 @@ class Client(object):
                 # If the protocol fields aren't known at all, we don't
                 # handle the message.
                 if field_names:
-                    named_fields = {k: v for k, v in zip(field_names, fields)}
+                    named_fields = dict(zip(field_names, fields))
                     return handler(self, **named_fields)
